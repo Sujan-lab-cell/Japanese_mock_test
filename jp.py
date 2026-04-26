@@ -21,9 +21,6 @@ lessons = {
 # 📌 Sidebar
 lesson_choice = st.sidebar.selectbox("Select Lesson", list(lessons.keys()))
 
-# 🔀 Randomize toggle
-shuffle = st.sidebar.toggle("🔀 Randomize Questions")
-
 # 📂 Score file
 SCORE_FILE = "scores.json"
 
@@ -34,24 +31,36 @@ if os.path.exists(SCORE_FILE):
 else:
     scores_data = {}
 
-questions = lessons[lesson_choice].copy()
-
-# 🔀 Shuffle INSIDE quiz
-if shuffle:
-    random.shuffle(questions)
-
 st.header(f"📝 {lesson_choice} Test")
 
+# 🔘 Buttons row (Submit + Randomize together)
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    submit = st.button("Submit")
+
+with col2:
+    shuffle = st.checkbox(" Randomize")
+
+# 🎯 Handle question order (important)
+if "questions" not in st.session_state or shuffle:
+    q_copy = lessons[lesson_choice].copy()
+    if shuffle:
+        random.shuffle(q_copy)
+    st.session_state.questions = q_copy
+
+questions = st.session_state.questions
+
+# 🧪 Questions
 user_answers = []
 score = 0
 
-# 🧪 Questions
 for i, q in enumerate(questions):
     user_input = st.text_input(f"{i+1}. {q['question']}", key=f"{lesson_choice}_{i}")
     user_answers.append(user_input.strip().lower())
 
-# ✅ Submit
-if st.button("Submit"):
+# ✅ Submit logic
+if submit:
     st.subheader("📊 Results")
 
     for i, q in enumerate(questions):
@@ -74,13 +83,11 @@ if st.button("Submit"):
 
 # 🏆 Scoreboard
 st.sidebar.subheader("🏆 Scoreboard")
+best = max(scores_data[lesson_choice])
+st.sidebar.write(f"🔥 Best: {best}")
 
-if lesson_choice in scores_data:
-    st.sidebar.write(f"Scores for {lesson_choice}:")
-    st.sidebar.write(scores_data[lesson_choice])
+for i, s in enumerate(scores_data[lesson_choice], 1):
+    st.sidebar.write(f"Attempt {i}: {s}")
 
-    # Show best score
-    best = max(scores_data[lesson_choice])
-    st.sidebar.write(f"🔥 Best: {best}")
-else:
+if(scores_data==0):
     st.sidebar.write("No scores yet")
