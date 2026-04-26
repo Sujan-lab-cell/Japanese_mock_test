@@ -1,7 +1,8 @@
 import streamlit as st
 import random
-import json
 import os
+import csv
+import pandas as pd
 
 st.set_page_config(page_title="JLPT Practice App", layout="centered")
 
@@ -21,28 +22,18 @@ lessons = {
 # 📌 Sidebar
 lesson_choice = st.sidebar.selectbox("Select Lesson", list(lessons.keys()))
 
-# 📂 Score file
-SCORE_FILE = "scores.json"
-
-# Load scores
-if os.path.exists(SCORE_FILE):
-    with open(SCORE_FILE, "r") as f:
-        scores_data = json.load(f)
-else:
-    scores_data = {}
-
 st.header(f"📝 {lesson_choice} Test")
 
-# 🔘 Buttons row (Submit + Randomize together)
+# 🔘 Buttons row (Submit + Randomize)
 col1, col2 = st.columns([1, 2])
 
 with col1:
     submit = st.button("Submit")
 
 with col2:
-    shuffle = st.checkbox(" Randomize")
+    shuffle = st.checkbox("🔀 Randomize")
 
-# 🎯 Handle question order (important)
+# 🎯 Question handling (stable order)
 if "questions" not in st.session_state or shuffle:
     q_copy = lessons[lesson_choice].copy()
     if shuffle:
@@ -59,7 +50,7 @@ for i, q in enumerate(questions):
     user_input = st.text_input(f"{i+1}. {q['question']}", key=f"{lesson_choice}_{i}")
     user_answers.append(user_input.strip().lower())
 
-# ✅ Submit logic
+# ✅ Submit logic + CSV save
 if submit:
     st.subheader("📊 Results")
 
@@ -72,22 +63,35 @@ if submit:
 
     st.write(f"## 🎯 Score: {score}/{len(questions)}")
 
-    # 🏆 Save score
-    if lesson_choice not in scores_data:
-        scores_data[lesson_choice] = []
+    # 📂 Save to CSV
+    FILE = "scores.csv"
+    file_exists = os.path.isfile(FILE)
 
-    scores_data[lesson_choice].append(score)
+    with open(FILE, "a", newline="") as f:
+        writer = csv.writer(f)
 
-    with open(SCORE_FILE, "w") as f:
-        json.dump(scores_data, f)
+        if not file_exists:
+            writer.writerow(["Lesson", "Score"])
 
-# 🏆 Scoreboard
+        writer.writerow([lesson_choice, score])
+
+# 🏆 Scoreboard (CSV based)
 st.sidebar.subheader("🏆 Scoreboard")
-best = max(scores_data[lesson_choice])
-st.sidebar.write(f"🔥 Best: {best}")
 
-for i, s in enumerate(scores_data[lesson_choice], 1):
-    st.sidebar.write(f"Attempt {i}: {s}")
+if os.path.exists("scores.csv"):
+    df = pd.read_csv("scores.csv")
 
-if(scores_data==0):
+    lesson_df = df[df["Lesson"] == lesson_choice]
+
+    if not lesson_df.empty:
+        st.sidebar.write(lesson_df)
+
+        best = lesson_df["Score"].max()
+        attempts = len(lesson_df)
+
+        st.sidebar.metric("🔥 Best Score", best)
+        st.sidebar.metric("📝 Attempts", attempts)
+    else:
+        st.sidebar.write("No scores yet")
+else:
     st.sidebar.write("No scores yet")
