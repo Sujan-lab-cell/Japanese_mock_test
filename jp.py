@@ -10,15 +10,45 @@ st.title("🇯🇵 JLPT Practice App")
 
 # 📚 Lessons data
 lessons = {
-    "Lesson 1": [
+    "Lesson 1 Vocabulary": [
         {"question": "I (polite)", "jp": "わたし", "en": "watashi"},
+        {"question": "You", "jp": "あなた", "en": "anata"},
+        {"question": "That person (normal)", "jp": "あのひと", "en": "ano hito"},
         {"question": "That person (polite)", "jp": "あのかた", "en": "ano kata"},
-        {"question": "Student", "jp": "がくせい", "en": "gakusei"},
+        {"question": "Mr/Ms", "jp": "さん", "en": "san"},
+        {"question": "Child suffix", "jp": "ちゃん", "en": "chan"},
+        {"question": "Boy suffix", "jp": "くん", "en": "kun"},
+        {"question": "Nationality suffix", "jp": "じん", "en": "jin"},
         {"question": "Teacher", "jp": "せんせい", "en": "sensei"},
+        {"question": "Student", "jp": "がくせい", "en": "gakusei"},
         {"question": "Company employee", "jp": "かいしゃいん", "en": "kaishain"},
+        {"question": "Bank employee", "jp": "ぎんこういん", "en": "ginkouin"},
+        {"question": "Doctor", "jp": "いしゃ", "en": "isha"},
+        {"question": "Who (normal)", "jp": "だれ", "en": "dare"},
+        {"question": "Who (polite)", "jp": "どなた", "en": "donata"},
+        {"question": "How old (normal)", "jp": "なんさい", "en": "nansai"},
+        {"question": "How old (polite)", "jp": "おいくつ", "en": "oikutsu"},
+        {"question": "Nice to meet you", "jp": "はじめまして", "en": "hajimemashite"},
+    ],
+
+    "Lesson 1 Grammar": [
+        {"question": "Topic marker", "jp": "は", "en": "wa"},
+        {"question": "Is/am/are", "jp": "です", "en": "desu"},
+        {"question": "Not (polite)", "jp": "じゃありません", "en": "ja arimasen"},
+        {"question": "Question marker", "jp": "か", "en": "ka"},
+        {"question": "Of / belonging", "jp": "の", "en": "no"},
+    ],
+
+    "Lesson 1 Sentences": [
+        {"question": "I am a student", "jp": "わたしはがくせいです", "en": "watashi wa gakusei desu"},
+        {"question": "I am not a teacher", "jp": "わたしはせんせいじゃありません", "en": "watashi wa sensei ja arimasen"},
+        {"question": "Who is that person?", "jp": "あのひとはだれですか", "en": "ano hito wa dare desu ka"},
+        {"question": "I am Indian", "jp": "わたしはインドじんです", "en": "watashi wa indo jin desu"},
+        {"question": "Nice to meet you", "jp": "はじめまして", "en": "hajimemashite"},
+        {"question": "Yes, that's right", "jp": "はいそうです", "en": "hai sou desu"},
+        {"question": "No, I am not", "jp": "いいえちがいます", "en": "iie chigaimasu"},
     ]
 }
-
 # 📌 Sidebar
 lesson_choice = st.sidebar.selectbox("Select Lesson", list(lessons.keys()))
 
